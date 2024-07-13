@@ -1,0 +1,161 @@
+<script setup>
+import { ref } from 'vue'
+import { useDebounceFn } from '@vueuse/core'
+import CmpAvatars from './CmpAvatars.vue'
+
+const props = defineProps({
+  orbits: {
+    type: Object,
+    required: true
+  }
+})
+
+let zooms = ref([8, 7, 6, 5, 4, 3, 2, 1, 0])
+let zoom = ref(7)
+const baseRadius = 7
+const edges = {
+  hide: 0,
+  novavatars: 7,
+  smallavatar: 21,
+  bigavatar: 49
+}
+
+const onWheel = useDebounceFn((ev) => {
+  if (ev.deltaY < 0 && zoom.value <= 9) {
+    zoom.value += 1
+    for (let i = 0; i < props.orbits.length; i++) {
+      zooms.value[i] = zooms.value[i] += 1
+    }
+  } else if (ev.deltaY > 0 && zoom.value > 0) {
+    zoom.value -= 1
+    for (let i = 0; i < props.orbits.length; i++) {
+      zooms.value[i] = zooms.value[i] -= 1
+    }
+  }
+}, 50)
+
+let avtrinfo = ref({
+  xPos: 0,
+  yPos: 0,
+  active: false,
+  img: undefined,
+  name: undefined,
+  position: undefined,
+  city: undefined
+})
+const showAvtrInfo = (ev, avatar) => {
+  avtrinfo.value.xPos = ev.x
+  avtrinfo.value.yPos = ev.y
+  avtrinfo.value.img = avatar.img
+  avtrinfo.value.name = avatar.name
+  avtrinfo.value.position = avatar.position
+  avtrinfo.value.city = avatar.city
+  avtrinfo.value.active = true
+}
+const hideAvtrInfo = () => {
+  avtrinfo.value.active = false
+}
+</script>
+
+<template>
+  <div>
+    <ul class="orbits" @wheel="onWheel">
+      <li
+        v-for="(orbit, i) in orbits"
+        :key="i"
+        class="orbit"
+        :class="{
+          hide: zooms[i] <= edges.hide,
+          noavatars: zooms[i] * baseRadius <= edges.noavatars,
+          small:
+            zooms[i] * baseRadius >= edges.noavatars && zooms[i] * baseRadius <= edges.smallavatar,
+          big: zooms[i] * baseRadius >= edges.bigavatar
+        }"
+        :style="{
+          '--moltiply': zooms[i],
+          '--base': baseRadius + 'rem',
+          '--radius': (zooms[i] * baseRadius) / 2 + 'rem',
+          '--count': orbit.array.length
+        }"
+      >
+        <span class="date">
+          {{ new Date(orbit.contact_date).toLocaleDateString() }}
+        </span>
+        <CmpAvatars
+          :avatars="orbit.array"
+          @showAvtrInfo="showAvtrInfo"
+          @hideAvtrInfo="hideAvtrInfo"
+        />
+      </li>
+    </ul>
+
+    <div
+      class="avtrinfo"
+      :class="{ active: avtrinfo.active }"
+      :style="{ '--x': avtrinfo.xPos + 'px', '--y': avtrinfo.yPos + 'px' }"
+    >
+      <img :src="avtrinfo.img" alt="Avatar image" />
+      <div>
+        <h2 class="name">{{ avtrinfo.name }}</h2>
+        <div class="position">{{ avtrinfo.position }}</div>
+        <div class="city">{{ avtrinfo.city }}</div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<style scoped>
+.orbits {
+  width: 100vw;
+  height: 100vh;
+  background-color: var(--secondary-color);
+}
+.orbit {
+  position: absolute;
+  bottom: calc(var(--base) * var(--moltiply) / -2);
+  left: calc(50% - (var(--base) * var(--moltiply)) / 2);
+  border: 1px solid var(--primary-color);
+  border-radius: 50%;
+  width: calc(var(--base) * var(--moltiply));
+  height: calc(var(--base) * var(--moltiply));
+  transition: width 0.6s ease-out, height 0.6s ease-out, bottom 0.6s ease-out, left 0.6s ease-out;
+  list-style: none;
+}
+.date {
+  display: table;
+  margin: auto;
+  top: -0.5rem;
+  background: var(--secondary-color);
+  padding: 0 0.5rem;
+  position: relative;
+  font-size: 0.7rem;
+  color: var(--primary-color);
+  font-style: italic;
+}
+
+.avtrinfo {
+  height: 5rem;
+  width: 12rem;
+  justify-content: space-between;
+  align-items: center;
+  background: white;
+  padding: 0.4rem;
+  border: 1px solid red;
+  top: var(--y);
+  position: absolute;
+  left: var(--x);
+  display: none;
+}
+.avtrinfo.active {
+  display: flex;
+}
+.avtrinfo img {
+  width: 2.8rem;
+  height: 2.8rem;
+  border-radius: 50%;
+}
+.avtrinfo > div {
+  margin-left: 0.5rem;
+  font-size: 0.7rem;
+}
+</style>
