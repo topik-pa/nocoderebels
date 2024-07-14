@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import { useDebounceFn } from '@vueuse/core'
 import CmpAvatars from './CmpAvatars.vue'
+import CmpAvatarInfo from './CmpAvatarInfo.vue'
 
 const props = defineProps({
   orbits: {
@@ -34,26 +35,20 @@ const onWheel = useDebounceFn((ev) => {
   }
 }, 50)
 
-let avtrinfo = ref({
-  xPos: 0,
-  yPos: 0,
-  active: false,
-  img: undefined,
-  name: undefined,
-  position: undefined,
-  city: undefined
+const avtrinfo = ref({
+  xPos: undefined,
+  yPos: undefined,
+  visible: false,
+  avatar: undefined
 })
 const showAvtrInfo = (ev, avatar) => {
-  avtrinfo.value.xPos = ev.x
-  avtrinfo.value.yPos = ev.y
-  avtrinfo.value.img = avatar.img
-  avtrinfo.value.name = avatar.name
-  avtrinfo.value.position = avatar.position
-  avtrinfo.value.city = avatar.city
-  avtrinfo.value.active = true
+  avtrinfo.value.xPos = ev.x,
+  avtrinfo.value.yPos = ev.y,
+  avtrinfo.value.avatar = avatar,
+  avtrinfo.value.visible = true
 }
 const hideAvtrInfo = () => {
-  avtrinfo.value.active = false
+  avtrinfo.value.visible = false
 }
 </script>
 
@@ -88,19 +83,7 @@ const hideAvtrInfo = () => {
         />
       </li>
     </ul>
-
-    <div
-      class="avtrinfo"
-      :class="{ active: avtrinfo.active }"
-      :style="{ '--x': avtrinfo.xPos + 'px', '--y': avtrinfo.yPos + 'px' }"
-    >
-      <img :src="avtrinfo.img" alt="Avatar image" />
-      <div>
-        <h2 class="name">{{ avtrinfo.name }}</h2>
-        <div class="position">{{ avtrinfo.position }}</div>
-        <div class="city">{{ avtrinfo.city }}</div>
-      </div>
-    </div>
+    <CmpAvatarInfo :avtrinfo="avtrinfo" />
   </div>
 </template>
 
@@ -131,31 +114,5 @@ const hideAvtrInfo = () => {
   font-size: 0.7rem;
   color: var(--primary-color);
   font-style: italic;
-}
-
-.avtrinfo {
-  height: 5rem;
-  width: 12rem;
-  justify-content: space-between;
-  align-items: center;
-  background: white;
-  padding: 0.4rem;
-  border: 1px solid red;
-  top: var(--y);
-  position: absolute;
-  left: var(--x);
-  display: none;
-}
-.avtrinfo.active {
-  display: flex;
-}
-.avtrinfo img {
-  width: 2.8rem;
-  height: 2.8rem;
-  border-radius: 50%;
-}
-.avtrinfo > div {
-  margin-left: 0.5rem;
-  font-size: 0.7rem;
 }
 </style>
