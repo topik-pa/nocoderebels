@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onBeforeMount} from 'vue'
+import { ref, onBeforeMount } from 'vue'
 import CmpOrbits from './components/CmpOrbits.vue'
 
 let orbits = ref([])
@@ -18,9 +18,23 @@ const getRemoteData = () => {
 
 <template>
   <main>
-    <CmpOrbits :orbits="orbits"/>
+    <CmpOrbits :orbits="orbits" />
+    <div id="shadow"></div>
   </main>
 </template>
 
 <style scoped>
+main {
+  --avatarbasesize: .8rem;
+  --primary-color: #ffffff;
+  --secondary-color: #111111;
+}
+#shadow {
+  position: absolute;
+  bottom: 0;
+  height: 0px;
+  width: 100%;
+  background: gray;
+  box-shadow: 0px 0px 40px 60px var(--secondary-color);
+}
 </style>

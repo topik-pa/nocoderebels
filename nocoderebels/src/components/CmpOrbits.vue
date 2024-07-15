@@ -13,16 +13,16 @@ const props = defineProps({
 
 let zooms = ref([8, 7, 6, 5, 4, 3, 2, 1, 0])
 let zoom = ref(7)
-const baseRadius = 7
+const baseRadius = 8
 const edges = {
-  hide: 0,
-  novavatars: 7,
-  smallavatar: 21,
-  bigavatar: 49
+  hide: 0 * baseRadius,
+  noavatars: 1 * baseRadius,
+  smallavatar: 3 * baseRadius,
+  bigavatar: 7 * baseRadius
 }
 
 const onWheel = useDebounceFn((ev) => {
-  if (ev.deltaY < 0 && zoom.value <= 9) {
+  if (ev.deltaY < 0 && zoom.value <= 13) {
     zoom.value += 1
     for (let i = 0; i < props.orbits.length; i++) {
       zooms.value[i] = zooms.value[i] += 1
@@ -62,8 +62,7 @@ const hideAvtrInfo = () => {
         :class="{
           hide: zooms[i] <= edges.hide,
           noavatars: zooms[i] * baseRadius <= edges.noavatars,
-          small:
-            zooms[i] * baseRadius >= edges.noavatars && zooms[i] * baseRadius <= edges.smallavatar,
+          small: zooms[i] * baseRadius > edges.hide && zooms[i] * baseRadius <= edges.smallavatar,
           big: zooms[i] * baseRadius >= edges.bigavatar
         }"
         :style="{
@@ -92,6 +91,7 @@ const hideAvtrInfo = () => {
   width: 100vw;
   height: 100vh;
   background-color: var(--secondary-color);
+  padding: 0;
 }
 .orbit {
   position: absolute;

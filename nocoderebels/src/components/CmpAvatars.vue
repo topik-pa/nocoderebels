@@ -53,7 +53,6 @@ const angles = [
   position: absolute;
   left: calc(50% - var(--avatarbasesize));
   bottom: var(--radius);
-  /* transform-origin: 50% 50%; */
   translate: calc(cos(var(--angle)) * var(--radius)) calc(sin(var(--angle)) * var(--radius) / -1);
   transition: all .6s ease-out;
 }
