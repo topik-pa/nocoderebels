@@ -36,19 +36,20 @@ const onWheel = useDebounceFn((ev) => {
 }, 50)
 
 const avtrinfo = ref({
-  xPos: undefined,
-  yPos: undefined,
+  xPos: 0,
+  yPos: 0,
   visible: false,
-  avatar: undefined
+  avatar: {}
 })
 const showAvtrInfo = (ev, avatar) => {
-  avtrinfo.value.xPos = ev.x,
-  avtrinfo.value.yPos = ev.y,
-  avtrinfo.value.avatar = avatar,
+  avtrinfo.value.xPos = ev.x
+  avtrinfo.value.yPos = ev.y
+  avtrinfo.value.avatar = avatar
   avtrinfo.value.visible = true
 }
 const hideAvtrInfo = () => {
   avtrinfo.value.visible = false
+  avtrinfo.value.avatar = {}
 }
 </script>
 

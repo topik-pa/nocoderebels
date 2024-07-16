@@ -12,6 +12,7 @@ const props = defineProps({
     class="avtrinfo"
     :class="{ visible: props.avtrinfo.visible }"
     :style="{ '--x': props.avtrinfo.xPos + 'px', '--y': props.avtrinfo.yPos + 'px' }"
+    v-if="props.avtrinfo.visible"
   >
     <img :src="props.avtrinfo.avatar?.img" alt="Avatar image" />
     <div>
@@ -29,9 +30,9 @@ const props = defineProps({
   background: white;
   padding: 0.4rem;
   border: 1px solid var(--primary-color);
-  top: var(--y);
+  top: calc(var(--avatarbasesize) * 2 + var(--y));
   position: absolute;
-  left: var(--x);
+  left: calc(var(--avatarbasesize) * 2 + var(--x));
   display: flex;
   opacity: 0;
   transition: opacity .6s ease-out;
